@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="TeachersAssistant.jnlp">
+  <information>
+    <title>TeachersAssistant</title>
+    <vendor>SoftwareEng</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="TeachersAssistant.jar" size="12804" download="eager" />
+    <jar href="lib\dom4j-1.6.1.jar" size="313898" download="eager" />
+    <jar href="lib\mysql-connector-java-8.0.18.jar" size="2330539" download="eager" />
+    <jar href="lib\poi-3.0.1-FINAL.jar" size="909270" download="eager" />
+    <jar href="lib\poi-3.6.jar" size="1539291" download="eager" />
+    <jar href="lib\poi-ooxml-3.6.jar" size="412783" download="eager" />
+    <jar href="lib\poi-ooxml-schemas-3.6.jar" size="3774332" download="eager" />
+    <jar href="lib\poi-ooxml-schemas-4.0.1.jar" size="7771088" download="eager" />
+    <jar href="lib\xmlbeans-2.3.0.jar" size="2666695" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="800" height="600" main-class="teachersassistant.TeachersAssistant"  name="TeachersAssistant" />
+  <update check="always"/>
+</jnlp>
