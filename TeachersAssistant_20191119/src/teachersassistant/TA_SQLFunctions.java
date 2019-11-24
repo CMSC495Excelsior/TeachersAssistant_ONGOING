@@ -6,8 +6,6 @@ package teachersassistant;
  * and open the template in the editor.
  */
 
-// Import
-//import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import java.io.File;
 import java.sql.*;
@@ -23,22 +21,14 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 
-/**
- *
- * @author SoftwareEng
- */
 public class TA_SQLFunctions {
     
     // Save ArrayList
     private static ArrayList<TreeMap<Integer, Row>> masterUploadList = new ArrayList<>();
-    
     private static ArrayList<Integer> masterClassNumberList = new ArrayList<>();
-    
     private static ArrayList<TreeMap> masterCList = new ArrayList<>();
     private static TreeMap<Integer, ArrayList<Integer>> masterGradeLevelList = new TreeMap<>();
-    
     private static TreeMap<String, TreeMap<Integer, ArrayList<Integer>>> masterCourseList = new TreeMap<>();
-    
     
     // Method to connect to the DB
     private static Connection connectDB(){
@@ -52,20 +42,15 @@ public class TA_SQLFunctions {
             dataSource.setDatabaseName("testing");
             
             Connection con = dataSource.getConnection();
-            System.out.println("MySQL CONNECTED!!");
             return con;
             
         }
         catch(Exception e){
             e.printStackTrace();
-            System.out.println("MySQL FAILED TO CONNECT");
             Connection con = null;
             return con;
         }
-        
     }
-    
-    
     
     // Method to upload records to the DB in bulk via Excel files
     public static boolean batchUpload(File file){
@@ -92,7 +77,6 @@ public class TA_SQLFunctions {
         String semester = null;
         int courseGradeLevel = 0;
         
-        
         // Local AssignmentInfo variables for upload
         int assignment_ID = 0;
         String assignmentName = null;
@@ -109,9 +93,6 @@ public class TA_SQLFunctions {
         int courseAssignmentMap_ID = 0;
         int assignmentCourseMap_ID = 0;
         
-        
-        
-        
          // Create DB connection
          Connection con = connectDB();
         
@@ -119,7 +100,6 @@ public class TA_SQLFunctions {
         for(int sheetNumber = 0; sheetNumber < masterUploadList.size(); sheetNumber++){
             // Save temporary sheet
             TreeMap<Integer, Row> tempSheet = masterUploadList.get(sheetNumber);
-            System.out.println("TempSheet size at sheet " + sheetNumber + " is: " + tempSheet.size());
             // Iterate through current sheet
             for(int rowNumber = 1; rowNumber < tempSheet.size(); rowNumber++){
                 studentCourseIDList = new ArrayList<>();
@@ -151,13 +131,12 @@ public class TA_SQLFunctions {
                                     courseSubject = (sheetNumber == 1 && cellNumber == 1) ? cell.getStringCellValue() : courseSubject;
                                     semester = (sheetNumber == 1 && cellNumber == 4) ? cell.getStringCellValue() : semester;
                                     
-                                    
                                     // Store assignment information
                                     assignmentName = (sheetNumber == 3 && cellNumber == 1) ? cell.getStringCellValue() : assignmentName;
                                     assignmentType = (sheetNumber == 3 && cellNumber == 2) ? cell.getStringCellValue() : assignmentType;
                                     
-                                    
                                     break;
+                                
                                 case Cell.CELL_TYPE_NUMERIC:
                                     // Store student information
                                     student_ID = (sheetNumber == 0 && cellNumber == 0) ? (int) cell.getNumericCellValue() : student_ID;
@@ -177,18 +156,14 @@ public class TA_SQLFunctions {
                                         // Try adding the course_ID's to an already existing key
                                         if(courseMap_ID != 0 && studentMap_ID != 0){
                                             studentCoursePairs.get(studentMap_ID).add(courseMap_ID);
-                                            System.out.println("\n\n---- It worked! Adding " + courseMap_ID + " to pre-existing key: " + studentMap_ID + " ----");
                                         }
                                     }
                                     catch(Exception e){
                                         if(courseMap_ID != 0 && studentMap_ID != 0){
-                                            System.out.println("\n\n---- It failed. Creating new key: " + studentMap_ID + " ----");
                                             // If there is no preexisting key, create a new one with that key value
                                             studentCourseIDList.add(courseMap_ID);
                                             studentCoursePairs.put(studentMap_ID, studentCourseIDList);
-                                            //e.printStackTrace();
                                         }
-                                        
                                     }
                                     
                                     // Check for date formatting
@@ -204,17 +179,14 @@ public class TA_SQLFunctions {
                                             System.out.println("Due Date is: " + dueDate.toString());
                                     }
                                     
-                                    
                                     // Store assignment information
                                     assignment_ID = (sheetNumber == 3 && cellNumber == 0) ? (int) cell.getNumericCellValue() : assignment_ID;
                                     points = (sheetNumber == 3 && cellNumber == 4) ? (float) cell.getNumericCellValue() : points;
                                     weight = (sheetNumber == 3 && cellNumber == 5) ? (float) cell.getNumericCellValue() : weight;                                    
                                     
-                                    
                                     // Store student assignment information
                                     studentAssignmentMap_ID = (sheetNumber == 4 && cellNumber == 0) ? (int) cell.getNumericCellValue() : studentAssignmentMap_ID;
                                     assignmentStudentMap_ID = (sheetNumber == 4 && cellNumber == 1) ? (int) cell.getNumericCellValue() : assignmentStudentMap_ID;                                    
-                                    
                                     
                                     // Store class assignment information
                                     courseAssignmentMap_ID = (sheetNumber == 5 && cellNumber == 0) ? (int) cell.getNumericCellValue() : courseAssignmentMap_ID;
@@ -254,6 +226,7 @@ public class TA_SQLFunctions {
                                 studentInsert.execute();
                                 studentInsert.close();
                                 break;
+                                
                             case 1:
                                 PreparedStatement coursesInsert = con.prepareStatement("INSERT INTO Courses (course_ID, courseSubject, gradeLevel, courseNumber, semester)"
                                     + " values (?,?,?,?,?)");
@@ -267,6 +240,7 @@ public class TA_SQLFunctions {
                                 coursesInsert.execute();
                                 coursesInsert.close();
                                 break;
+                                
                             case 2:
                                 // Add courseMap_ID to ArrayList
                                 PreparedStatement studentCoursesInsert = con.prepareStatement("INSERT INTO StudentCourseGrades (student_ID, course_ID)"
@@ -282,15 +256,12 @@ public class TA_SQLFunctions {
                             case 3:
                                 PreparedStatement assignmentInsert = con.prepareStatement("INSERT INTO Assignments (assignment_ID, assignmentName, assignmentType, dueDate, points, weight)"
                                     + " values (?,?,?,?,?,?)");
-                                System.out.printf("Assignment ID: %d | Assignment Name: %s | Assignment Type: %s | Assignment Date: %s | Assignment Points: %f | Assignment Weight: %f",
-                                        assignment_ID, assignmentName, assignmentType, dueDate, points, weight);
                                 assignmentInsert.setInt(1, assignment_ID);
                                 assignmentInsert.setString(2, assignmentName);
                                 assignmentInsert.setString(3, assignmentType);
                                 assignmentInsert.setDate(4, java.sql.Date.valueOf(dueDate));
                                 assignmentInsert.setFloat(5, points);
                                 assignmentInsert.setFloat(6, weight);
-                                
 
                                 // Execute & close
                                 assignmentInsert.execute();
@@ -308,7 +279,6 @@ public class TA_SQLFunctions {
                                 studentAssignmentInsert.close();
                                 break;
                                 
-                                
                             case 5:
                                 PreparedStatement courseAssignmentInsert = con.prepareStatement("INSERT INTO CourseAssignment (course_ID, assignment_ID)"
                                     + " values (?,?)");
@@ -320,23 +290,18 @@ public class TA_SQLFunctions {
                                 courseAssignmentInsert.close();
                                 break;
                                 
-                                
                             case 6:
-                                System.out.println("Attendance List size is: " + attendanceDateList.size());
                                 if(attendanceDateList.size() == tempSheet.size()-1){
                                     // Iterate through studentCoursePairs and make sure to add the attendanceDate for each student in each course
                                     for(Map.Entry<Integer, ArrayList<Integer>> entry : studentCoursePairs.entrySet()){
-                                        System.out.println("Student_ID: " + entry.getKey());
                                         // Save temporary key and value
                                         int tempStudentID = entry.getKey();
                                         ArrayList<Integer> tempCourseList = entry.getValue();
 
                                         // Iterate through ArrayList of course_ID's and run SQL
                                         for(int tempCourseID : tempCourseList){
-                                            System.out.println("\n\tCourse_ID: " + tempCourseID);
                                             // Iterate through attendanceDateList and insert attendanceDate for the current student_ID in the current course_ID
                                             for(LocalDate tempDate : attendanceDateList){
-                                                System.out.println("\n\t\tAttendanceDate: " + tempDate);
                                                 PreparedStatement attendanceInsert = con.prepareStatement("INSERT INTO StudentAttendance (student_ID, course_ID, attendanceDate)"
                                                     + " values (?,?,?)");
                                                 attendanceInsert.setInt(1, tempStudentID);
@@ -351,17 +316,15 @@ public class TA_SQLFunctions {
                                     }
                                 }
                                 
-                                // Clear list
-                                //studentCourseIDList.clear();
                                 break;
                         }
-                        
                     }
                     catch(Exception e){
                         e.printStackTrace();
                     }
                 }
                 else{
+                    // TODO: Handle failed connection.
                     System.out.println("Connection failed");
                 }
             }
@@ -370,16 +333,14 @@ public class TA_SQLFunctions {
         try{
             // Close connection
             con.close();
-        }catch(Exception e){
+        }
+        catch(Exception e){
+            // TODO: Handle failed close-connection.
             e.printStackTrace();
         }
         
-        // Return
         return true;    
     }
-    
-    
-    
     
     // Method to check for number of students (used to tell if the teacher has any open classes)
     public static int checkStudents(){
@@ -397,7 +358,6 @@ public class TA_SQLFunctions {
                 ResultSet set = stmt.executeQuery();
                 while(set.next()){
                     count++;
-                    System.out.println("Count is: " + count);
                 }
                 
                 // Close stmt/con
@@ -445,14 +405,12 @@ public class TA_SQLFunctions {
 
             // Begin populating masterList
             while(subjectSet.next()){
-                System.out.println("------Generating CourseMap------");
                 // Initialize necessary local TreeMaps
                 TreeMap<Integer, ArrayList<Integer>> gradeLevelMap = new TreeMap<>();
                 TreeMap<String, TreeMap<Integer, ArrayList<Integer>>> courseMap = new TreeMap<>();
                 
                 // Save the current class subject
                 String tempSubject = subjectSet.getString("courseSubject");
-                System.out.println("Subject: " + tempSubject);
 
                 // Bind params
                 getGradeLevels.setString(1, tempSubject);
@@ -467,7 +425,6 @@ public class TA_SQLFunctions {
                     
                     // Save the current grade level
                     int tempGradeLevel = gradeLevelSet.getInt("gradeLevel");
-                    System.out.println("\tGrade Level: " + tempGradeLevel);
 
                     // Bind params
                     getCourseNumbers.setString(1, tempSubject);
@@ -480,7 +437,6 @@ public class TA_SQLFunctions {
                     while(courseNumberSet.next()){
                         // Save the current course number
                         int tempCourseNumber = courseNumberSet.getInt("courseNumber");
-                        System.out.println("\t\tCourse Number: " + tempCourseNumber);
                         
                         // Add all courseNumbers to list
                         classNums.add(tempCourseNumber);
@@ -488,7 +444,6 @@ public class TA_SQLFunctions {
                                        
                     // Add the class numbers for the current grade level
                     gradeLevelMap.put(tempGradeLevel, classNums);
-
                 }
                 
                 // Add the grade levels & course numbers for the current subject
@@ -496,7 +451,6 @@ public class TA_SQLFunctions {
                 
                 // Finally, add entire subject directory to the masterList
                masterList.add(courseMap);
-                //getSubjects.close();
             }
             
             // Close all statements & connection
@@ -510,12 +464,8 @@ public class TA_SQLFunctions {
             e.printStackTrace();
         }
         
-        // Print Test
-        //printMasterCourseList();
-        // Return master list
         return masterList;
     }
-    
     
     // Create a method to retrieve all pertinent information given specific course attributes
     public static int getCourseID(String courseSubject, int gradeLevel, int courseNumber){
@@ -542,16 +492,13 @@ public class TA_SQLFunctions {
             }
             
             // Use course_ID to retrieve other information
-            System.out.println("\n\n---Course ID is: " + course_ID + "---\n\n");
             return course_ID;
         }
         catch(Exception e){
             // Return default value
             return course_ID;
         }
-        
     }
-    
     
     // Create a method to return an ArrayList for the attendanceDates
     public static ArrayList populateAttendanceList(int course_ID){
@@ -583,8 +530,6 @@ public class TA_SQLFunctions {
             e.printStackTrace();
             return null;
         }
-        
-        
     }
     
     // Create method to return a TreeMap<Integer, String> for the Student Details (<student_ID, studentFullName>)
@@ -618,29 +563,16 @@ public class TA_SQLFunctions {
             e.printStackTrace();
             return null;
         }
-        
-        
     }
     
-    
-    
-    
-    
-    public static void printMasterCourseList(){
+    // TODO: Print list
+    /* public static void printMasterCourseList(){
         ArrayList courseList = generateCourseMap();
-        // TODO: Print list
-        // TreeMap<String, TreeMap<Integer, ArrayList<Integer>>>
+        TreeMap<String, TreeMap<Integer, ArrayList<Integer>>>
         System.out.println("Size is: " + courseList.size());
-        /*for(int i = 0; i < courseList.size(); i++){
+        for(int i = 0; i < courseList.size(); i++){
             System.out.println("Class is: " + courseList.get(i).getClass());
-            
             //TreeMap<String, TreeMap<Integer, ArrayList<Integer>>> tempMap = courseList.get(i);
-            
-            
-        }*/
-    }
-    
-    
+        }
+    }*/
 }
-
-
