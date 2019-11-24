@@ -16,28 +16,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-
-
-/**
- *
- * @author SoftwareEng
- */
-
- 
 public class TA_ExcelFunctions {
     
     // Sheet Map
     private static TreeMap<Integer, Row> sheetData = new TreeMap<>();
     
-    // Sheet Maps for storeWorkbookData
-    //private static TreeMap<Integer, Row> studentData = new TreeMap<>();
-    //private static TreeMap<Integer, Row> courseData = new TreeMap<>();
-    //private static TreeMap<Integer, Row> studentCourseData = new TreeMap<>();
-    
-    // Sheets ArrayList
-    //private static ArrayList<TreeMap<Integer, Row>> sheetList = new ArrayList<>();
-    
-    // Method for saving the SheetData
+    // Method for saving the SheetData as a TreeMap
     public static TreeMap<Integer, Row> storeSheetData(File file){
         // Reset the TreeMaps
         sheetData.clear();
@@ -68,18 +52,12 @@ public class TA_ExcelFunctions {
             e.printStackTrace();
         }
 
-        System.out.println("The size of the sheet Data is: " + sheetData.size());
-
-        return sheetData;
+     return sheetData;
     }
     
-    
-    /**
-     *  UPDATE THIS SECTION!!
-     */
-    
-    // Method for saving the SheetData
+    // Method for saving the SheetData as an ArrayList of TreeMaps
     public static ArrayList<TreeMap<Integer, Row>> storeWorkBookData(File file){
+     
         // Initialize local TreeMaps for EACH sheet
         TreeMap<Integer, Row> studentData = new TreeMap<>();
         TreeMap<Integer, Row> courseData = new TreeMap<>();
@@ -92,7 +70,6 @@ public class TA_ExcelFunctions {
         // Initialize local ArrayList to store EACH TreeMap
         ArrayList<TreeMap<Integer, Row>> sheetList = new ArrayList<>();
         
-
         // Iterate through the sheet and store all data
         try{
             // Create Excel Workbook/Sheet instances
@@ -103,7 +80,7 @@ public class TA_ExcelFunctions {
             // First, check the sheet names/amounts
             if(!error.isEmpty()){
                 // Prompt user
-                TA_AlertPage.alert("Exel Workbook Error", error, Color.CORAL);
+                TA_AlertPage.alert("Excel Workbook Error", error, Color.CORAL);
                 
                 // Return null
                 return null;
@@ -169,48 +146,12 @@ public class TA_ExcelFunctions {
             e.printStackTrace();
         }
         
-        // Print list for testing
-        for(int u = 0; u < sheetList.size(); u++){
-            TreeMap<Integer, Row> temp = sheetList.get(u);
-            System.out.println("Sheet #" + u + ": ");
-            // Iterate through sheet
-            for(int i = 0; i < temp.size(); i++){
-                // Define row
-                Row row = temp.get(i);
-                System.out.println("\tRow #" + i + ": ");
-                // Iterate through row
-                for(int j = 0; j < row.getPhysicalNumberOfCells(); j++){
-                    // Define cell
-                    Cell cell = row.getCell(j);
-                    if(cell == null)
-                        continue;
-                    switch(cell.getCellType()){
-                            case Cell.CELL_TYPE_STRING:
-                                System.out.println("\t\tCell #" + j + ": " + cell.getStringCellValue());
-                                break;
-                            case Cell.CELL_TYPE_NUMERIC:
-                                System.out.println("\t\tCell #" + j + ": " + cell.getNumericCellValue());
-                                break;
-                            case Cell.CELL_TYPE_BLANK:
-                                System.out.println("Cell is BLANK");
-                                break;
-                            default:
-                                System.out.println("Cell is different type");
-                    }  
-                }
-            }
-        }
-        
         // Return sheetList
         return sheetList;
     }
     
     // Check workbook method
     private static String checkWorkbook(XSSFWorkbook workbook){
-        /**
-         * NOTE: Excel's default date format is: MM/DD/YYYY.
-         *       Consider changing accepted date format from (YYYY/MM/DD) to (MM/DD/YYYY).
-         */
         
         // Error messages
         String studentInfoError = "\n\t+StudentInfo:"
