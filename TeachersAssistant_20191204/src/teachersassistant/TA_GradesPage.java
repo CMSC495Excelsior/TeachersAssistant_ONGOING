@@ -419,7 +419,7 @@ public class TA_GradesPage {
                                 gradesFilledOut = true;
                             }
                             else{
-                                errorMessage = "You\'ve opted not proceed with grade entries.";
+                                errorMessage = "You\'ve opted to not proceed with grade entries.";
                                 gradesFilledOut = false;
                             }
                         }
