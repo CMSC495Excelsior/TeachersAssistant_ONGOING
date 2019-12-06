@@ -1525,7 +1525,7 @@ public class TA_SQLFunctions {
         if(!checkCourseGrades()){
             // Prompt user and store the user's answer
             continueAnyway = TA_AlertPage.alert("WARNING!", "Not all course grades for each student have been filled out."
-                    + "\nTo fix this, make sure EACH student has recieved a gradae for EACH assignment in EACH course.\nAre you sure you want to proceed?", Color.CORAL, true);
+                    + "\nTo fix this, make sure EACH student has recieved a grade for EACH assignment in EACH course.\nAre you sure you want to proceed?", Color.CORAL, true);
         }
         
         // If the user wishes to continue, let them continue, otherwise prevent the reports from being generated
